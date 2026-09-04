@@ -7,7 +7,6 @@ const morgan = require('morgan');
 const sequelize = require('./config/database');
 const sensorRoutes = require('./routes/sensorRoutes');
 const seedService = require('./services/seedService');
-const telemetrySimulator = require('./services/telemetrySimulator');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -24,7 +23,7 @@ app.get('/', (req, res) => {
     res.json({
         status: '✅ AQUA-ETHIC Backend Running',
         database: 'SQLite (Zero-setup local persistence)',
-        telemetry: 'Live background simulator active (20s cycle)',
+        telemetry: 'Live ESP32 telemetry',
         version: '1.0.0',
         timestamp: new Date().toISOString()
     });
@@ -55,9 +54,6 @@ async function startServer() {
 
         // Seed initial telemetry data if empty
         await seedService.seedIfEmpty();
-
-        // Start real-time background telemetry simulator
-        telemetrySimulator.start();
 
         // Start server
         app.listen(PORT, () => {
